@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kublick/react-test -f ./client//Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true kublick/react-test npm test
+
+after_sucess:
+  - docker build -t kublick/multi-client ./client
+  - docker build -t kublick/multi-nginx ./nginx
+  - docker build -t kublick/multi-server ./server
+  - docker build -t kublick/multi-worker ./worker
+
+  # Take those images
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push kublick/multi-client
+  - docker push kublick/multi-nginx
+  - docker push kublick/multi-server
+  - docker push kublick/multi-worker
