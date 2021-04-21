@@ -20,3 +20,14 @@ after_sucess:
   - docker push kublick/multi-nginx
   - docker push kublick/multi-server
   - docker push kublick/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "multi-docker"
+  env: "Multidocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-674586854642"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
